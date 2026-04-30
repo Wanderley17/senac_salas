@@ -1,0 +1,23 @@
+import 'dart:developer';
+import 'package:senac_salas/database/config/config_web.dart' as web_config;
+import 'package:senac_salas/database/config/config_mobile.dart' as mobile_config;
+import 'package:senac_salas/database/app_database.dart';
+
+class BancoDados {
+  final db = AppDatabase(mobile_config.openConnection());//chama a classe AppDatabase e dá o apelido de db para ela
+
+  //Função para inserir a sala no banco de dados
+  Future<int> inserirSala({required SalasCompanion sala}) async{
+    int result = await db //Chama o banco de dados
+        .into(db.salas) //diz em qual tabela o dado vai ser inserido
+        .insert(sala); //insere os dados da sala na tabela
+    
+    return result; //retorna o resultado da inserção
+  }
+
+  //Função para carregar salas
+  Future<List<Sala>> carregarSalas() async => db.listarTodasSalas;
+
+  //Função para assistir as mudanças na tabela Salas
+  Stream<List<Sala>> carregarSalasStream() => db.assistirMudancasSalas();
+}

@@ -2,9 +2,11 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:crypto/crypto.dart';
 import 'package:drift/drift.dart' as d;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:senac_salas/database/app_database.dart';
 import 'package:senac_salas/database/daos/usuarios_dao.dart';
@@ -53,19 +55,22 @@ class _RegistroState extends State<Registro> {
 
     ValidateTools validate = ValidateTools();
 
-    bool camposPreenchidos = validate.validarTextFields([
-      _senhaCtrl,
-      _matriculaCtrl,
-      _funcaoCtrl,
-      _celularCtrl,
-      _emailCtrl,
-      _senhaConfirmarCtrl,
-      _nomeCtrl,
-    ]);
+    bool camposPreenchidos = validate.validarTextFields(
+      [
+        _senhaCtrl,
+        _matriculaCtrl,
+        _funcaoCtrl,
+        _celularCtrl,
+        _emailCtrl,
+        _senhaConfirmarCtrl,
+        _nomeCtrl,
+      ],
+      senhasControllers: [_senhaCtrl, _senhaConfirmarCtrl],
+    );
 
     //Verifica o login e senha inseridos
     log(
-      '${_senhaCtrl.text} | ${_matriculaCtrl.text} | ${_funcaoCtrl.text} | ${_celularCtrl.text} | ${_nomeCtrl.text} | ${_emailCtrl.text} | ${_senhaConfirmarCtrl.text}'
+      '${_senhaCtrl.text} | ${_matriculaCtrl.text} | ${_funcaoCtrl.text} | ${_celularCtrl.text} | ${_nomeCtrl.text} | ${_emailCtrl.text} | ${_senhaConfirmarCtrl.text}',
     );
 
     if (!camposPreenchidos) {
@@ -184,6 +189,7 @@ class _RegistroState extends State<Registro> {
                 SizedBox(height: 15),
                 TextField(
                   controller: _matriculaCtrl,
+                  keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -199,6 +205,7 @@ class _RegistroState extends State<Registro> {
                 ),
                 TextField(
                   controller: _nomeCtrl,
+                  keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -214,6 +221,7 @@ class _RegistroState extends State<Registro> {
                 ),
                 TextField(
                   controller: _funcaoCtrl,
+                  keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -229,6 +237,11 @@ class _RegistroState extends State<Registro> {
                 ),
                 TextField(
                   controller: _celularCtrl,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    TelefoneInputFormatter(),
+                  ],
+                  keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -244,6 +257,7 @@ class _RegistroState extends State<Registro> {
                 ),
                 TextField(
                   controller: _emailCtrl,
+                  keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(

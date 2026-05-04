@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:senac_salas/database/app_database.dart';
 import 'package:senac_salas/database/daos/usuarios_dao.dart';
 import 'package:senac_salas/telas/auth/auth_wrapper.dart';
+import 'package:senac_salas/telas/tela_sobre.dart';
 
 class TelaSettings extends StatefulWidget {
   const TelaSettings({super.key});
@@ -47,18 +48,18 @@ class _TelaSettingsState extends State<TelaSettings> {
               child: Column(
                 children: [
                   ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => TelaSobre()),
+                      );
+                    },
                     title: Text('Sobre'),
                     subtitle: Text('Informações dos desenvolvedores'),
-                    trailing: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.info_outline, color: Colors.indigo),
-                    ),
+                    trailing: Icon(Icons.info_outline, color: Colors.indigo),
                   ),
                   ListTile(
-                    title: Text('Fazer Log Out'),
-                    subtitle: Text('Encerra a sessão e sai da conta'),
-                    trailing: IconButton(
-                      onPressed: () async {
+                    onTap: () async {
                         try {
                           final result = await usuarioDao.fazerLogout(usuario);
 
@@ -78,8 +79,9 @@ class _TelaSettingsState extends State<TelaSettings> {
                           log('Erro no logout: $e');
                         }
                       },
-                      icon: Icon(Icons.logout, color: Colors.red),
-                    ),
+                    title: Text('Fazer Log Out'),
+                    subtitle: Text('Encerra a sessão e sai da conta'),
+                    trailing: Icon(Icons.logout, color: Colors.red),
                   ),
                 ],
               ),

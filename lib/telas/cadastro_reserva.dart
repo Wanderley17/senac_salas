@@ -108,7 +108,14 @@ class _CadastroReservasState extends State<CadastroReservas> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: CardInfo(widget: widget),
+                child: CardInfo(
+                  widget: widget,
+                  onSalaSelecionada: (sala) {
+                    setState(() {
+                      selectedSala = sala;
+                    });
+                  },
+                ),
               ),
             ],
           ),
@@ -119,6 +126,10 @@ class _CadastroReservasState extends State<CadastroReservas> {
             height: 50,
             width: MediaQuery.of(context).size.width,
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.indigo, // Cor de fundo
+                foregroundColor: Colors.white, // Cor do texto e ícone
+              ),
               onPressed: () {
                 if (selectedSala != null) {
                   cadastrarReserva(idSala: selectedSala!.id);
@@ -145,7 +156,13 @@ class _CadastroReservasState extends State<CadastroReservas> {
 }
 
 class CardInfo extends StatefulWidget {
-  const CardInfo({super.key, required this.widget});
+  const CardInfo({
+    super.key,
+    required this.widget,
+    required this.onSalaSelecionada,
+  });
+
+  final Function(Sala?) onSalaSelecionada;
 
   final CadastroReservas widget;
 
@@ -155,8 +172,11 @@ class CardInfo extends StatefulWidget {
 
 class _CardInfoState extends State<CardInfo> {
   int? idSala;
+  Sala? selectedSala;
 
   void selecionaIdSala(int id) => setState(() => idSala = id);
+
+  void selecionarSala(Sala? sala) => setState(() => selectedSala = sala);
 
   @override
   Widget build(BuildContext context) {
@@ -218,12 +238,15 @@ class _CardInfoState extends State<CardInfo> {
                           ),
                         ),
                       ),
-                      items: list.map((Sala sala){
-                        return DropdownMenuItem<Sala>(value: sala, child: Text(sala.nome));
+                      items: list.map((Sala sala) {
+                        return DropdownMenuItem<Sala>(
+                          value: sala,
+                          child: Text(sala.nome),
+                        );
                       }).toList(),
                       onChanged: (sala) {
-                        if(sala != null){
-                          selecionaIdSala(sala.id);
+                        if (sala != null) {
+                          widget.onSalaSelecionada(sala);
                         }
                       },
                     ),

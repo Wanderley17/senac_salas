@@ -53,6 +53,7 @@ class _CadastroReservasState extends State<CadastroReservas> {
             ),
           );
         }
+        if (mounted) Navigator.pop(context); //?
       } else {
         log("Reserva de sala não efetuada");
         mudaStatusReserva(false);
@@ -110,10 +111,10 @@ class _CadastroReservasState extends State<CadastroReservas> {
                 width: MediaQuery.of(context).size.width,
                 child: CardInfo(
                   widget: widget,
-                  onSalaSelecionada: (sala) {
-                    setState(() {
-                      selectedSala = sala;
-                    });
+                  salaSelecionada: (sala) {
+                    if (sala != null) {
+                      selecionarSala(sala);
+                    }
                   },
                 ),
               ),
@@ -156,13 +157,13 @@ class _CadastroReservasState extends State<CadastroReservas> {
 }
 
 class CardInfo extends StatefulWidget {
+  final Function(Sala? sala) salaSelecionada;
+
   const CardInfo({
     super.key,
     required this.widget,
-    required this.onSalaSelecionada,
+    required this.salaSelecionada,
   });
-
-  final Function(Sala?) onSalaSelecionada;
 
   final CadastroReservas widget;
 
@@ -173,17 +174,32 @@ class CardInfo extends StatefulWidget {
 class _CardInfoState extends State<CardInfo> {
   int? idSala;
   Sala? selectedSala;
+  List<Sala> listOfSalas = [];
 
   void selecionaIdSala(int id) => setState(() => idSala = id);
 
-  void selecionarSala(Sala? sala) => setState(() => selectedSala = sala);
+  void selecionaSala(Sala? sala) => setState(() {
+    selectedSala = sala;
+    widget.salaSelecionada(selectedSala);
+  });
+
+  void carregaTodasSalas() async {
+    AppDatabase db = AppDatabase();
+    SalasDao salasDao = SalasDao(db);
+    List<Sala> list = await salasDao.buscarSalasDisponiveis(
+      disponibilidade: true,
+    );
+    setState(() => listOfSalas = list);
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => carregaTodasSalas());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    AppDatabase db = AppDatabase();
-    SalasDao salasDao = SalasDao(db);
-    final streamSalas = salasDao.buscarSalasDisponiveis(disponibilidade: true);
-
     return Card(
       color: Colors.white,
       elevation: 1.5,
@@ -210,49 +226,35 @@ class _CardInfoState extends State<CardInfo> {
               title: widget.widget.curso.turno,
               label: "Turno  do curso",
             ),
-            StreamBuilder(
-              stream: streamSalas,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {}
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: (listOfSalas.isNotEmpty)
+                  ? DropdownButtonHideUnderline(
+                      child: DropdownButton<Sala>(
+                        value: selectedSala,
+                        items: listOfSalas.map((Sala sala) {
+                          return DropdownMenuItem<Sala>(
+                            value: sala,
+                            child: Text(sala.nome),
+                          );
+                        }).toList(),
 
-                final list = snapshot.data ?? [];
-
-                if (list.isEmpty) {}
-
-                return SizedBox(
-                  height: 60,
-                  width: MediaQuery.of(context).size.width,
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButtonFormField<Sala>(
-                      decoration: InputDecoration(
-                        hintText: "Selecione a sala",
-                        suffixIcon: Icon(Icons.room, color: Colors.indigo),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: Colors.indigo,
-                            width: 0.5,
-                          ),
+                        onChanged: selecionaSala,
+                      ),
+                    )
+                  : ListTile(
+                      title: Text(
+                        'Nenhuma sala disponível',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
-                      items: list.map((Sala sala) {
-                        return DropdownMenuItem<Sala>(
-                          value: sala,
-                          child: Text(sala.nome),
-                        );
-                      }).toList(),
-                      onChanged: (sala) {
-                        if (sala != null) {
-                          widget.onSalaSelecionada(sala);
-                        }
-                      },
+                      subtitle: Text(
+                        'Cadastre uma nova sala ou altere a disponibilidade de uma',
+                      ),
                     ),
-                  ),
-                );
-              },
             ),
           ],
         ),

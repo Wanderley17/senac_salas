@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:senac_salas/telas/cadastro_curso.dart';
 import 'package:senac_salas/telas/cadastro_sala.dart';
 import 'package:senac_salas/telas/tela_cursos.dart';
-import 'package:senac_salas/telas/tela_reservas.dart';
 import 'package:senac_salas/telas/tela_salas.dart';
 
 class TelasWrapper extends StatefulWidget {
@@ -19,13 +18,11 @@ class _TelasWrapperState extends State<TelasWrapper>
   List<Tab> tabs = [
     Tab(icon: Icon(Icons.meeting_room), text: 'Salas'),
     Tab(icon: Icon(Icons.school), text: 'Cursos'),
-    Tab(icon: Icon(Icons.bookmark), text: 'Reservas'),
   ];
 
   List<Widget> pages = [
     TelaSalas(), //? Salas
     TelaCursos(), //? Cursos
-    TelaReservas(), //? Reservas
   ];
 
   void adicionarSala() => Navigator.push(
@@ -68,9 +65,9 @@ class _TelasWrapperState extends State<TelasWrapper>
                 backgroundColor: Colors.white,
                 automaticallyImplyLeading: false,
                 actions: [
-                  IconButton(onPressed: () {}, icon: Icon(Icons.settings)),
                   PopupMenuButton<String>(
                     icon: Icon(Icons.add),
+                    color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

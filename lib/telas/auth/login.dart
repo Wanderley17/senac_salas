@@ -16,6 +16,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  AppDatabase db = AppDatabase();
+  late UsuariosDao usuariosDao = UsuariosDao(db);
+  ValidateTools validate = ValidateTools();
   final TextEditingController _loginCtrl = TextEditingController();
   final TextEditingController _senhaCtrl = TextEditingController();
 
@@ -36,26 +39,22 @@ class _LoginState extends State<Login> {
   }
 
   void fazerLogin() async {
-    AppDatabase db = AppDatabase();
-    UsuariosDao usuariosDao = UsuariosDao(db);
-    ValidateTools validate = ValidateTools();
-
     bool camposPreenchidos = validate.validarTextFields([
-      _loginCtrl, _senhaCtrl
+      _loginCtrl,
+      _senhaCtrl,
     ]);
 
-    if(!camposPreenchidos){
+    if (!camposPreenchidos) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.amber,
           content: Text(
-            'Preencha todos os campos', 
-            style: TextStyle(color: Colors.black
-            ),
+            'Preencha todos os campos',
+            style: TextStyle(color: Colors.black),
           ),
-        )
+        ),
       );
-      
+
       return;
     }
 
@@ -69,10 +68,75 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(builder: (context) => Home()),
         );
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text(
+                'Nome de Usuário ou Senhas Incorretas',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+        }
       }
     } catch (e) {
       log('Erro no login $e');
     }
+  }
+
+  void recuperarSenha() async {
+    if (_loginCtrl.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            'Preencha o campo de e-mail',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (!_loginCtrl.text.contains('@')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            'Digite um e-mail válido',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+      return;
+    }
+
+    final result = await usuariosDao.buscarDicaSenha(_loginCtrl.text.trim());
+
+    if (result == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            'Dica de senha não encontrada',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.green,
+        content: Text(
+          'dica de senha: $result',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+    );
   }
 
   @override
@@ -165,7 +229,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: recuperarSenha,
                   child: Text(
                     'Esqueceu a senha?',
                     style: TextStyle(color: Colors.indigo),

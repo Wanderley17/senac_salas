@@ -17,9 +17,7 @@ class TelaSobre extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             spacing: 10,
             children: [
-              Expanded( child: 
-                Text('')
-              )
+              Text('Senac PA')
             ],
           ),
         ),

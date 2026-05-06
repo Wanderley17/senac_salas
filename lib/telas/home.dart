@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:senac_salas/database/app_database.dart';
 import 'package:senac_salas/database/daos/reservas_dao.dart';
 import 'package:senac_salas/telas/tela_perfil.dart';
+import 'package:senac_salas/telas/tela_reservas.dart';
 import 'package:senac_salas/telas/telas_wrapper.dart';
 
 class Home extends StatefulWidget {
@@ -14,8 +15,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<Widget> listOfPages = [
     TelasWrapper(), //? Salas
-    Container(color: Colors.grey), //? Cursos
-    Container(color: Colors.grey), //? Reservas
+    TelaReservas(), //? Reservas
     TelaPerfil(), //? Perfil
   ];
   int _selectedIndex = 0;
@@ -47,11 +47,6 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.meeting_room_outlined),
             activeIcon: Icon(Icons.meeting_room),
             label: 'Salas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school_outlined),
-            activeIcon: Icon(Icons.school),
-            label: 'Cursos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark_outline),

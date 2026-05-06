@@ -18,8 +18,8 @@ class SalasDao extends DatabaseAccessor<AppDatabase> with _$SalasDaoMixin {
   }
 
   //Função que busca as salas a partir da disponibilidade
-  Stream<List<Sala>> buscarSalasDisponiveis({required bool disponibilidade}) {
-    return (select(salas)..where((s) => s.disponivel.equals(disponibilidade))).watch();
+  Future<List<Sala>> buscarSalasDisponiveis({required bool disponibilidade}) {
+    return (select(salas)..where((s) => s.disponivel.equals(disponibilidade))).get();
   }
 
   //Função que cadastra as salas de aula

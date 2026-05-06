@@ -269,7 +269,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
                     decoration: InputDecoration(
                       hint: Text(usuario.nome),
                       hintStyle: TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                       suffixIcon: Icon(Icons.abc),
@@ -440,7 +440,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  if (editar) SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: FloatingActionButton.extended(
                       onPressed: () {

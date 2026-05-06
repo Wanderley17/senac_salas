@@ -7,5 +7,5 @@ class Cursos extends Table{ //CREATE TABLE cursos(
   DateTimeColumn get dataFim => dateTime()(); //? data_fim TEXT,
   TextColumn get turno => text()(); // turno TEXT,
   TextColumn get professor => text()(); // professor TEXT,
-  TextColumn get codigoSIG => text().nullable()(); // codigo_sig TEXT NULL
+  TextColumn get codigoSIG => text().unique().nullable()(); // codigo_sig TEXT NULL
 } // );

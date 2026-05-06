@@ -11,6 +11,9 @@ dependencies: #pacotes para o uso em produção/lançamento
   flutter:
     sdk: flutter
 
+  flutter_localizations: 
+    sdk: flutter
+
   cupertino_icons: ^1.0.8
   drift: ^2.32.1
   drift_flutter: ^0.3.0

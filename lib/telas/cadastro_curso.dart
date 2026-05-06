@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:senac_salas/database/app_database.dart';
 import 'package:senac_salas/database/daos/cursos_dao.dart';
+import 'package:senac_salas/utils/format_tools.dart';
 import 'package:senac_salas/utils/validate_tools.dart';
 
 class CadastroCurso extends StatefulWidget {
@@ -14,7 +15,7 @@ class CadastroCurso extends StatefulWidget {
 
 class _CadastroCursoState extends State<CadastroCurso> {
   final scaffoldKey = GlobalKey<ScaffoldMessengerState>(); //?
-
+  final FormatTools tools = FormatTools();
   final _nomeCursoCtrl = TextEditingController();
   final _professorCtrl = TextEditingController();
   DateTime? _dataInicio;
@@ -27,8 +28,20 @@ class _CadastroCursoState extends State<CadastroCurso> {
   void selecionarDataInicio() async {
     final DateTime? dataEscolhida = await showDatePicker(
       context: context,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
       firstDate: DateTime.now(),
-      lastDate: DateTime(2027),
+      lastDate: DateTime(2036),
+      builder: (context, child){
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.indigo,
+              onPrimary: Colors.white
+            )
+          ),
+          child: child!
+        );
+      }
     );
 
     if (dataEscolhida != null) {
@@ -39,12 +52,26 @@ class _CadastroCursoState extends State<CadastroCurso> {
   void selecionarDataFim() async {
     final DateTime? dataEscolhida = await showDatePicker(
       context: context,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2027),
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      firstDate: _dataInicio!,
+      lastDate: DateTime(2036),
+      builder: (context, child){
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.indigo,
+              onPrimary: Colors.white
+            )
+          ),
+          child: child!
+        );
+      }
     );
 
     if (dataEscolhida != null) {
-      setState(() => _dataFim = dataEscolhida);
+      setState(() {
+        _dataFim = dataEscolhida;
+      });
     }
   }
 
@@ -56,21 +83,21 @@ class _CadastroCursoState extends State<CadastroCurso> {
     ValidateTools validate = ValidateTools();
 
     bool camposPreenchidos = validate.validarTextFields([
-      _professorCtrl, _nomeCursoCtrl
+      _professorCtrl,
+      _nomeCursoCtrl,
     ]);
 
-    if(!camposPreenchidos){
+    if (!camposPreenchidos) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.amber,
           content: Text(
-            'Preencha todos os campos', 
-            style: TextStyle(color: Colors.black
-            ),
+            'Preencha todos os campos',
+            style: TextStyle(color: Colors.black),
           ),
-        )
+        ),
       );
-      
+
       return;
     }
 
@@ -154,6 +181,7 @@ class _CadastroCursoState extends State<CadastroCurso> {
             children: [
               TextField(
                 controller: _nomeCursoCtrl,
+                keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -169,6 +197,7 @@ class _CadastroCursoState extends State<CadastroCurso> {
               ),
               TextField(
                 controller: _professorCtrl,
+                keyboardType: TextInputType.name,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -187,7 +216,9 @@ class _CadastroCursoState extends State<CadastroCurso> {
                 width: MediaQuery.of(context).size.width,
                 child: DropdownButtonHideUnderline(
                   child: DropdownButtonFormField<String>(
+                    dropdownColor: Colors.white,
                     decoration: InputDecoration(
+                      fillColor: Colors.white,
                       hintText: "Selecione o turno",
                       suffixIcon: Icon(Icons.sunny, color: Colors.indigo),
                       border: OutlineInputBorder(
@@ -224,7 +255,7 @@ class _CadastroCursoState extends State<CadastroCurso> {
                   icon: Icon(Icons.calendar_today),
                   label: Text(
                     (_dataInicio != null)
-                        ? "$_dataInicio"
+                        ? tools.converterDateTime(_dataInicio!)
                         : "Selecione data de início",
                   ),
                   style: TextButton.styleFrom(
@@ -235,14 +266,14 @@ class _CadastroCursoState extends State<CadastroCurso> {
                   ),
                 ),
               ),
-              SizedBox(
+              if (_dataInicio != null) SizedBox(
                 height: 60,
                 width: MediaQuery.of(context).size.width,
                 child: TextButton.icon(
                   onPressed: selecionarDataFim,
                   icon: Icon(Icons.calendar_month),
                   label: Text(
-                    (_dataFim != null) ? "$_dataFim" : "Selecione data de fim",
+                    (_dataFim != null) ? tools.converterDateTime(_dataFim!) : "Selecione data de fim",
                   ),
                   style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(

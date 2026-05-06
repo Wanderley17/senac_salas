@@ -159,7 +159,6 @@ class _TelaSalasState extends State<TelaSalas> {
                   child: Column(
                     children: [
                       ListTile(
-                        onTap: () {},
                         visualDensity: VisualDensity.comfortable,
                         leading: Icon(Icons.meeting_room, color: Colors.indigo),
                         title: Text(
@@ -192,11 +191,7 @@ class _TelaSalasState extends State<TelaSalas> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           spacing: 20,
-                          children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.edit, color: Colors.indigo),
-                            ),
+                          children: [                        
                             IconButton(
                               onPressed: () async =>abrirDialogoRemover(sala),
                               icon: Icon(Icons.delete, color: Colors.red),

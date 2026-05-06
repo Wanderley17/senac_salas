@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
 
 class ValidateTools {
+    String? validarEmail(String? email) {
+    if (email == null || email.isEmpty) {
+      return "E-mail Inválido";
+    }
+
+    final bool emailValido = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+    ).hasMatch(email);
+
+    return emailValido ? null : "Insira um e-mail válido";
+  }
+
   bool validarTextFields(List<TextEditingController> controllers, {List<TextEditingController>? numberControllers, List<TextEditingController>? senhasControllers,}) {
     bool isControllerFilled = controllers.every(
       (tec) => tec.text.trim().isNotEmpty && tec.text.trim().length > 3,

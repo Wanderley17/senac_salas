@@ -36,7 +36,7 @@ class _CadastroSalaState extends State<CadastroSala> {
 
     bool camposPreenchidos = validate.validarTextFields(
       [_nomeCtrl, _recursosCtrl],
-      
+
       numberControllers: [_capacidadeCtrl, _numeroCtrl],
     );
 
@@ -142,6 +142,7 @@ class _CadastroSalaState extends State<CadastroSala> {
           children: [
             TextField(
               controller: _nomeCtrl,
+              keyboardType: TextInputType.name,
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -158,6 +159,11 @@ class _CadastroSalaState extends State<CadastroSala> {
             TextField(
               controller: _numeroCtrl,
               textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(3),
+                FilteringTextInputFormatter.digitsOnly,
+              ],
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -172,6 +178,7 @@ class _CadastroSalaState extends State<CadastroSala> {
             ),
             TextField(
               controller: _recursosCtrl,
+              keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -211,6 +218,10 @@ class _CadastroSalaState extends State<CadastroSala> {
             TextField(
               controller: _capacidadeCtrl,
               textInputAction: TextInputAction.next,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(3), //Permite apenas dígitos
+                FilteringTextInputFormatter.digitsOnly,
+              ],
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -223,10 +234,6 @@ class _CadastroSalaState extends State<CadastroSala> {
                 floatingLabelBehavior: FloatingLabelBehavior.auto,
               ),
               keyboardType: TextInputType.number, //Usa o teclado númerico
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, //Permite apenas dígitos
-              ],
-
               onChanged: (value) {
                 int? valor = int.tryParse(value);
 

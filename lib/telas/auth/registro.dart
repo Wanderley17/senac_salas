@@ -20,12 +20,15 @@ class Registro extends StatefulWidget {
 }
 
 class _RegistroState extends State<Registro> {
+  final _formKey = GlobalKey<FormState>(); //?
+  final tools = ValidateTools();
   //Controladores
   final TextEditingController _matriculaCtrl = TextEditingController();
   final TextEditingController _nomeCtrl = TextEditingController();
   final TextEditingController _funcaoCtrl = TextEditingController();
   final TextEditingController _celularCtrl = TextEditingController();
   final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _dicaSenhaCtrl = TextEditingController();
   final TextEditingController _senhaCtrl = TextEditingController();
   final TextEditingController _senhaConfirmarCtrl = TextEditingController();
 
@@ -58,6 +61,7 @@ class _RegistroState extends State<Registro> {
     bool camposPreenchidos = validate.validarTextFields(
       [
         _senhaCtrl,
+        _dicaSenhaCtrl, //?
         _matriculaCtrl,
         _funcaoCtrl,
         _celularCtrl,
@@ -92,6 +96,7 @@ class _RegistroState extends State<Registro> {
     String funcao = _funcaoCtrl.text.trim();
     String celular = _celularCtrl.text.trim();
     String email = _emailCtrl.text.trim();
+    String dica = _dicaSenhaCtrl.text.trim();
     String senha = _criptografarSenha(_senhaCtrl.text.trim());
     String senhaConfirmar = _criptografarSenha(_senhaConfirmarCtrl.text.trim());
 
@@ -117,6 +122,7 @@ class _RegistroState extends State<Registro> {
       celular: d.Value(celular),
       email: d.Value(email),
       senha: d.Value(senha),
+      dicaSenha: d.Value(dica) //?
     );
 
     mudaStatusCadastro(true);
@@ -152,6 +158,7 @@ class _RegistroState extends State<Registro> {
     _celularCtrl.dispose();
     _emailCtrl.dispose();
     _senhaCtrl.dispose();
+    _dicaSenhaCtrl.dispose();
     _senhaConfirmarCtrl.dispose();
 
     super.dispose();
@@ -165,185 +172,281 @@ class _RegistroState extends State<Registro> {
         child: SingleChildScrollView(
           padding: EdgeInsets.all(25),
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: 10,
-              children: [
-                Text(
-                  'Criar conta',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    color: Colors.indigo,
-                  ),
-                ),
-                Text(
-                  'Gerenciador de salas',
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16,
-                    color: Colors.black38,
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextField(
-                  controller: _matriculaCtrl,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.indigo, width: 1.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 10,
+                children: [
+                  Text(
+                    'Criar conta',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: Colors.indigo,
                     ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: Icon(Icons.fingerprint, color: Colors.indigo),
-                    labelText: 'Digite sua matricula',
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                   ),
-                ),
-                TextField(
-                  controller: _nomeCtrl,
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.indigo, width: 1.0),
+                  Text(
+                    'Gerenciador de salas',
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      color: Colors.black38,
                     ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: Icon(Icons.person, color: Colors.indigo),
-                    labelText: 'Digite seu nome',
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                   ),
-                ),
-                TextField(
-                  controller: _funcaoCtrl,
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.indigo, width: 1.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: Icon(Icons.work, color: Colors.indigo),
-                    labelText: 'Digite função',
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                  ),
-                ),
-                TextField(
-                  controller: _celularCtrl,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    TelefoneInputFormatter(),
-                  ],
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.indigo, width: 1.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: Icon(Icons.phone, color: Colors.indigo),
-                    labelText: 'Digite seu celular',
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                  ),
-                ),
-                TextField(
-                  controller: _emailCtrl,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.indigo, width: 1.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: Icon(Icons.mail, color: Colors.indigo),
-                    labelText: 'Digite seu e-mail',
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                  ),
-                ),
-                TextField(
-                  controller: _senhaCtrl,
-                  textInputAction: TextInputAction.done,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: estaVisivel,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.indigo, width: 1.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        (estaVisivel) ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.indigo,
+                  SizedBox(height: 15),
+                  TextFormField(
+                    controller: _matriculaCtrl,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Adicione um número de matrícula corretamente";
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.indigo,
+                          width: 1.0,
+                        ),
                       ),
-                      onPressed:
-                          defineVisibilidade, //Chama a função de alterar a visibilidade
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: Icon(Icons.fingerprint, color: Colors.indigo),
+                      labelText: 'Digite sua matricula',
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
                     ),
-                    labelText: 'Digite sua senha',
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                   ),
-                ),
-                TextField(
-                  controller: _senhaConfirmarCtrl,
-                  textInputAction: TextInputAction.done,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: estaVisivel,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.indigo, width: 1.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        (estaVisivel) ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.indigo,
+                  TextFormField(
+                    controller: _nomeCtrl,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Adicione um nome corretamente";
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.indigo,
+                          width: 1.0,
+                        ),
                       ),
-                      onPressed:
-                          defineVisibilidade, //Chama a função de alterar a visibilidade
-                    ),
-                    labelText: 'confirme sua senha',
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                  ),
-                ),
-                SizedBox(height: 10),
-                SizedBox(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width,
-                  child: ElevatedButton.icon(
-                    icon: (estaCadastrando)
-                        ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                            ),
-                          )
-                        : Icon(Icons.check, color: Colors.white),
-                    onPressed: fazerCadastro,
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
-                    ),
-                    label: Text(
-                      "Registro",
-                      style: TextStyle(color: Colors.white),
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: Icon(Icons.person, color: Colors.indigo),
+                      labelText: 'Digite seu nome',
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
                     ),
                   ),
-                ),
-              ],
+                  TextFormField(
+                    controller: _funcaoCtrl,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Adicione sua função";
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.indigo,
+                          width: 1.0,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: Icon(Icons.work, color: Colors.indigo),
+                      labelText: 'Digite função',
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _celularCtrl,
+                    validator: (value) {
+                      if (value == null || value.isEmpty || value.length < 9) {
+                        return "Adicione um número de celular corretamente";
+                      }
+                      return null;
+                    },
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      TelefoneInputFormatter(),
+                    ],
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.indigo,
+                          width: 1.0,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: Icon(Icons.phone, color: Colors.indigo),
+                      labelText: 'Digite seu celular',
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _emailCtrl,
+                    validator: tools.validarEmail,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.indigo,
+                          width: 1.0,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: Icon(Icons.mail, color: Colors.indigo),
+                      labelText: 'Digite seu e-mail',
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _senhaCtrl,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Adicione sua senha";
+                      }
+                      return null;
+                    },
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: estaVisivel,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.indigo,
+                          width: 1.0,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          (estaVisivel)
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.indigo,
+                        ),
+                        onPressed:
+                            defineVisibilidade, //Chama a função de alterar a visibilidade
+                      ),
+                      labelText: 'Digite sua senha',
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _senhaConfirmarCtrl,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Adicione sua senha";
+                      }
+                      if (_senhaCtrl.text != value) {
+                        return 'Senhas não conferem';
+                      }
+                      return null;
+                    },
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: estaVisivel,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.indigo,
+                          width: 1.0,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          (estaVisivel)
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.indigo,
+                        ),
+                        onPressed:
+                            defineVisibilidade, //Chama a função de alterar a visibilidade
+                      ),
+                      labelText: 'confirme sua senha',
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _dicaSenhaCtrl,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Adicione uma dica de senha";
+                      }
+                      return null;
+                    },
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.indigo,
+                          width: 1.0,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: Icon(Icons.lightbulb_outline_rounded, color: Colors.indigo),
+                      labelText: 'Digite uma dica de senha',
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  SizedBox(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width,
+                    child: ElevatedButton.icon(
+                      icon: (estaCadastrando)
+                          ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : Icon(Icons.check, color: Colors.white),
+                        onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          fazerCadastro();
+                        }
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(Colors.indigo),
+                      ),
+                      label: Text(
+                        "Registro",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

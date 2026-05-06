@@ -80,4 +80,13 @@ class UsuariosDao extends DatabaseAccessor<AppDatabase>
 
     return result;
   }
+
+  Future<String?> buscarDicaSenha(String email)async{
+    final result = await (
+      select(usuarios)
+      ..where((u) => u.email.equals(email))
+    ).getSingleOrNull();
+
+    return result?.dicaSenha;
+  }
 }

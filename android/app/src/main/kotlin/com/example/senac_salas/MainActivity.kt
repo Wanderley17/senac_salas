@@ -1,4 +1,4 @@
-package br.senac.pa.senac_salas
+package com.example.senac_salas
 
 import io.flutter.embedding.android.FlutterActivity
 

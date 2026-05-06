@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:senac_salas/telas/auth/auth_wrapper.dart';
 import 'package:senac_salas/themes/tema.dart';
@@ -32,6 +33,14 @@ Future<void> main() async {
       debugShowCheckedModeBanner: false,  //Remove o banner de debug do aplicativo
       home: AuthWrapper(), //Autenticar(),
       theme: tema,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
+      supportedLocales: [
+        Locale('pt', 'BR')
+      ],
       locale: const Locale('pt', 'BR'),
     ),
   );

@@ -201,6 +201,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
                 spacing: 15,
                 children: [
                   SizedBox(
+                    height: 100,
                     width: MediaQuery.of(context).size.width,
                     child: Card(
                       elevation: 1.5,
@@ -228,25 +229,49 @@ class _TelaPerfilState extends State<TelaPerfil> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  usuario.nome,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    usuario.nome,
+                                    softWrap: true,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.fade,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      overflow: TextOverflow.fade,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  usuario.funcao,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal,
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    usuario.funcao,
+                                    softWrap: true,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.fade,
+                                    style: TextStyle(
+                                      color: Colors.black45,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                      overflow: TextOverflow.fade,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  usuario.matricula ?? "Sem número",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal,
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    usuario.matricula ?? "Sem número",
+                                    softWrap: true,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.fade,
+                                    style: TextStyle(
+                                      color: Colors.black45,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                      overflow: TextOverflow.fade,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -295,6 +320,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
                   ),
                   TextFormField(
                     enabled: editar,
+                    maxLength: 16,
                     controller: matriculaCtrl,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -333,6 +359,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
                   TextFormField(
                     enabled: editar,
                     controller: funcaoCtrl,
+                    maxLength: 20,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Adicione uma função corretamente";

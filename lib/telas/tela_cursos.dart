@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:senac_salas/custom/custom_card_curso.dart';
+import 'package:senac_salas/custom/custom_label.dart';
 import 'package:senac_salas/database/app_database.dart';
 import 'package:senac_salas/database/daos/cursos_dao.dart';
+import 'package:senac_salas/database/daos/reservas_dao.dart';
+import 'package:senac_salas/database/daos/salas_dao.dart';
 import 'package:senac_salas/telas/cadastro_reserva.dart';
 
 class TelaCursos extends StatefulWidget {
@@ -13,43 +17,91 @@ class TelaCursos extends StatefulWidget {
 class _TelaCursosState extends State<TelaCursos> {
   AppDatabase db = AppDatabase();
   late CursosDao cursosDao = CursosDao(db);
+  late ReservasDao reservasDao = ReservasDao(db);
+  late SalasDao salasDao = SalasDao(db);
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) async {});
     super.initState();
+  }
+
+  void cadastrarReserva({required int idSala, required int idCurso}) async {
+    ReservasCompanion reserva = ReservasCompanion.insert(
+      idCurso: idCurso,
+      idSala: idSala,
+    );
+
+    try {
+      int result = await reservasDao.fazerReserva(reserva, idSala);
+
+      if (result > 0) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Reserva de sala efetuada com sucesso"),
+              backgroundColor: Colors.green,
+              showCloseIcon: true,
+            ),
+          );
+        }
+        if (mounted) Navigator.pop(context); //?
+        return;
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Reserva de sala não efetuada"),
+              backgroundColor: Colors.red,
+              showCloseIcon: true,
+            ),
+          );
+        }
+      }
+      return;
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Erro ao efetuar reserva de sala"),
+            backgroundColor: Colors.redAccent,
+            showCloseIcon: true,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> removerCurso(Curso curso) async {
     int result = await cursosDao.removerCurso(id: curso.id);
 
     if (result > 0) {
-     if(mounted) {
-       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.green,
-          content: Text(
-            "curso ${curso.nomeCurso} removido com sucesso.", 
-            style: TextStyle(color: Colors.white),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            content: Text(
+              "curso ${curso.nomeCurso} removido com sucesso.",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
-        ),
-      );
-     }
+        );
+      }
     } else {
-       if(mounted) {
-       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.amber,
-          content: Text(
-            "curso ${curso.nomeCurso} não removido", 
-             style: TextStyle(color: Colors.white),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.amber,
+            content: Text(
+              "curso ${curso.nomeCurso} não removido",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
-        ),
-      );
-     }
+        );
+      }
     }
 
-    if(mounted) Navigator.of(context).pop();
+    if (mounted) Navigator.of(context).pop();
   }
 
   Future<void> abrirDialogoRemover(Curso curso) {
@@ -57,16 +109,27 @@ class _TelaCursosState extends State<TelaCursos> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text('Remover?'),
           content: Text('Deseja remover o curso ${curso.nomeCurso} ?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancelar'),
+              child: Text('Cancelar', style: TextStyle(color: Colors.indigo)),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () async => removerCurso(curso),
-              child: Text('Sim'),
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.red),
+                foregroundColor: WidgetStatePropertyAll(Colors.white),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.white, width: 0.5),
+                  ),
+                ),
+              ),
+              child: Text('Remover curso'),
             ),
           ],
         );
@@ -74,7 +137,125 @@ class _TelaCursosState extends State<TelaCursos> {
     );
   }
 
-  void abrirDialogoReserva(BuildContext context, {required Curso curso}) {
+  Future<void> abrirDialogoReserva(Curso curso) async {
+    ValueNotifier<Sala?> salaNotifier = ValueNotifier(null);
+    final listOfSalasDisponiveis = await salasDao.buscarSalasDisponiveis(
+      disponibilidade: true,
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Escolha a sala'),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          backgroundColor: Colors.white,
+          contentPadding: EdgeInsets.all(10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+            side: BorderSide(color: Colors.indigo, width: 0.5),
+          ),
+          content: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              spacing: 5,
+              children: [
+                CustomLabel(title: curso.nomeCurso, label: "Nome do curso"),
+                CustomLabel(
+                  title: curso.professor,
+                  label: "Professor do curso",
+                ),
+
+                CustomLabel(title: curso.turno, label: "Turno  do curso"),
+
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: (listOfSalasDisponiveis.isNotEmpty)
+                      ? DropdownButtonHideUnderline(
+                          child: ValueListenableBuilder(
+                            valueListenable: salaNotifier,
+                            builder: (context, value, child) {
+                              return DropdownButton<Sala>(
+                                dropdownColor: Colors.white,
+                                value: value,
+                                hint: Text('Selecione a Sala'),
+                                items: listOfSalasDisponiveis.map((Sala sala) {
+                                  return DropdownMenuItem<Sala>(
+                                    value: sala,
+                                    child: Text(sala.nome),
+                                  );
+                                }).toList(),
+
+                                onChanged: (sala) => salaNotifier.value = sala,
+                              );
+                            },
+                          ),
+                        )
+                      : ListTile(
+                          title: Text(
+                            'Nenhuma sala disponível',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          subtitle: Text(
+                            'Cadastre uma nova sala ou altere a disponibilidade de uma',
+                          ),
+                        ),
+                ),
+              ],
+            ),
+          ),
+
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancelar'),
+            ),
+            if (listOfSalasDisponiveis.isNotEmpty)
+              ElevatedButton(
+                onPressed: () async {
+                  if (salaNotifier.value == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.amber,
+                        content: Text(
+                          'Selecione a sala para o curso',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+                  cadastrarReserva(
+                    idSala: salaNotifier.value!.id,
+                    idCurso: curso.id,
+                  );
+                },
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.indigo),
+                  foregroundColor: WidgetStatePropertyAll(Colors.white),
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(color: Colors.white, width: 0.5),
+                    ),
+                  ),
+                ),
+                child: Text('Concluir reserva'),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  void abrirTelaReserva(BuildContext context, {required Curso curso}) {
     Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
@@ -105,7 +286,7 @@ class _TelaCursosState extends State<TelaCursos> {
           stream: cursosDao.streamOfCursos(),
           builder: (context, snapshot) {
             List<Curso> listOfCurso = snapshot.data ?? [];
-            
+
             if (listOfCurso.isEmpty) {
               return Center(child: Text("Nenhum curso cadastrado no sistema."));
             }
@@ -115,47 +296,10 @@ class _TelaCursosState extends State<TelaCursos> {
               itemBuilder: (context, index) {
                 final curso = listOfCurso[index];
 
-                return Card(
-                  elevation: 2,
-                  borderOnForeground: true,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.indigo, width: 0.5),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: InkWell(
-                    splashColor: Colors.indigo,
-                    highlightColor: Colors.blueAccent,
-                    onTap: () {
-                      abrirDialogoReserva(context, curso: curso);
-                    },
-                    child: ListTile(
-                      visualDensity: VisualDensity.comfortable,
-                      leading: Icon(Icons.school, color: Colors.indigo),
-                      title: Text(
-                        curso.nomeCurso,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      subtitle: Text(
-                        curso.professor,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.black54,
-                        ),
-                      ),
-                      trailing: IconButton(
-                        onPressed: () => abrirDialogoRemover(curso),
-                        icon: Icon(Icons.delete, color: Colors.red),
-                      ),
-                    ),
-                  ),
+                return CustomCardCurso(
+                  curso: curso,
+                  onDelete: () => abrirDialogoRemover(curso),
+                  onReserve: () => abrirDialogoReserva(curso),
                 );
               },
             );

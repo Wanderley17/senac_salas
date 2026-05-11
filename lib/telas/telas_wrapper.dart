@@ -16,8 +16,8 @@ class _TelasWrapperState extends State<TelasWrapper>
   late TabController tabCtrl;
 
   List<Tab> tabs = [
-    Tab(icon: Icon(Icons.meeting_room), text: 'Salas'),
-    Tab(icon: Icon(Icons.school), text: 'Cursos'),
+    Tab(text: 'Salas'),
+    Tab(text: 'Cursos'),
   ];
 
   List<Widget> pages = [
@@ -54,7 +54,7 @@ class _TelasWrapperState extends State<TelasWrapper>
       child: Scaffold(
         extendBodyBehindAppBar: false,
         body: NestedScrollView(
-           floatHeaderSlivers: false,
+          floatHeaderSlivers: false,
           headerSliverBuilder: (context, _) {
             return [
               SliverAppBar(
@@ -85,21 +85,12 @@ class _TelasWrapperState extends State<TelasWrapper>
                       return <PopupMenuEntry<String>>[
                         const PopupMenuItem<String>(
                           value: 'sala',
-                          child: ListTile(
-                            leading: Icon(Icons.meeting_room),
-                            title: Text('Adicionar Sala'),
-                            contentPadding: EdgeInsets.zero,
-                          ),
+                          child: Text('Adicionar Sala'),
                         ),
                         const PopupMenuItem<String>(
                           value: 'curso',
-                          child: ListTile(
-                            leading: Icon(Icons.grade),
-                            title: Text('Adicionar Curso'),
-                            contentPadding: EdgeInsets.zero,
-                          ),
+                          child: Text('Adicionar Curso'),
                         ),
-                        
                       ];
                     },
                   ),
@@ -110,11 +101,12 @@ class _TelasWrapperState extends State<TelasWrapper>
                 pinned: true,
                 elevation: 0.0,
                 automaticallyImplyLeading: false,
-                 backgroundColor: Colors.white,
+                backgroundColor: Colors.white,
                 title: TabBar(
                   tabs: tabs,
                   controller: tabCtrl,
                   isScrollable: true,
+                  labelStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   tabAlignment: TabAlignment.start,
                   indicatorColor: Colors.indigo,
                   labelColor: Colors.indigo,

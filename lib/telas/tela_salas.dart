@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' as d;
 import 'package:flutter/material.dart';
+import 'package:senac_salas/custom/custom_card_sala.dart';
 import 'package:senac_salas/database/app_database.dart';
 import 'package:senac_salas/database/daos/salas_dao.dart';
 import 'package:senac_salas/telas/cadastro_curso.dart';
@@ -53,16 +54,27 @@ class _TelaSalasState extends State<TelaSalas> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text('Remover?'),
           content: Text('Deseja remover a sala ${sala.nome} ?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancelar'),
+              child: Text('Cancelar', style:TextStyle(color: Colors.indigo)),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () async => removerSala(sala),
-              child: Text('Sim'),
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.red),
+                foregroundColor: WidgetStatePropertyAll(Colors.white),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.white, width: 0.5),
+                  ),
+                ),
+              ),
+              child: Text('Remover sala'),
             ),
           ],
         );
@@ -139,69 +151,18 @@ class _TelaSalasState extends State<TelaSalas> {
             //Verifica se a lista de salas está vazia
             if (listOfSalas.isEmpty) {
               return Center(child: Text("Nenhuma sala cadastrada no sistema."));
-            } 
+            }
 
             return ListView.builder(
               itemCount: listOfSalas.length,
               itemBuilder: (context, index) {
                 final sala = listOfSalas[index];
 
-                return Card(
-                  elevation: 2,
-                  borderOnForeground: true,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.indigo, width: 0.5),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        visualDensity: VisualDensity.comfortable,
-                        leading: Icon(Icons.meeting_room, color: Colors.indigo),
-                        title: Text(
-                          sala.nome,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        subtitle: Text(
-                          sala.localizacao,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.black54,
-                          ),
-                        ),
-                        trailing: Switch(
-                          value: sala.disponivel,
-                          onChanged: (value) {
-                            mudarDisponibilidadeSala(sala, value);
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 50,
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          spacing: 20,
-                          children: [                        
-                            IconButton(
-                              onPressed: () async =>abrirDialogoRemover(sala),
-                              icon: Icon(Icons.delete, color: Colors.red),
-                            ),
-                            SizedBox.square(dimension: 20),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                return CustomCardSala(
+                  onDisponivel: (value) =>
+                      mudarDisponibilidadeSala(sala, value),
+                  onDelete: () => abrirDialogoRemover(sala),
+                  sala: sala,
                 );
               },
             );

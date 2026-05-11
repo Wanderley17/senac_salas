@@ -93,8 +93,6 @@ class _CadastroReservasState extends State<CadastroReservas> {
 
   @override
   Widget build(BuildContext context) {
-    AppDatabase db = AppDatabase();
-    SalasDao salasDao = SalasDao(db);
 
     return SafeArea(
       child: Scaffold(
@@ -231,6 +229,7 @@ class _CardInfoState extends State<CardInfo> {
               child: (listOfSalas.isNotEmpty)
                   ? DropdownButtonHideUnderline(
                       child: DropdownButton<Sala>(
+                        dropdownColor: Colors.white,
                         value: selectedSala,
                         items: listOfSalas.map((Sala sala) {
                           return DropdownMenuItem<Sala>(

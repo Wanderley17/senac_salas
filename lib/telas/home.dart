@@ -44,9 +44,9 @@ class _HomeState extends State<Home> {
         currentIndex: _selectedIndex,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.meeting_room_outlined),
-            activeIcon: Icon(Icons.meeting_room),
-            label: 'Salas',
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Início',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark_outline),

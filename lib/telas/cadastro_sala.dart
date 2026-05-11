@@ -197,6 +197,7 @@ class _CadastroSalaState extends State<CadastroSala> {
               width: MediaQuery.of(context).size.width,
               child: DropdownButtonHideUnderline(
                 child: DropdownButtonFormField<String>(
+                  dropdownColor: Colors.white,
                   decoration: InputDecoration(
                     hintText: "Selecione o local",
                     suffixIcon: Icon(Icons.room, color: Colors.indigo),

@@ -25,6 +25,7 @@ dependencies: #pacotes para o uso em produção/lançamento
   intl: ^0.20.2
   brasil_fields: ^1.19.0
   share_plus: ^13.1.0
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies: #pacotes para o uso em desenvolvimento
   flutter_test:
@@ -40,3 +41,14 @@ flutter:
 
   assets: 
     - assets/senac_logo.png
+    - assets/splash.png
+    - assets/jose.webp
+    - assets/kaio.webp
+    - assets/logan.webp
+    - assets/pedro.webp
+
+  fonts:
+    - family: NotoSans
+    - fonts: 
+      - asset: assets/notosans.ttf
+        style: normal

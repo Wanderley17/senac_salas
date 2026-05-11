@@ -57,16 +57,29 @@ class _TelaReservasState extends State<TelaReservas> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text('Remover?'),
-          content: Text('Deseja remover a reserva da sala ${model.sala.nome} para curso? ${model.curso.nomeCurso}'),
+          content: Text(
+            'Deseja remover a reserva da sala ${model.sala.nome} para curso? ${model.curso.nomeCurso}',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancelar'),
+              child: Text('Cancelar', style: TextStyle(color: Colors.indigo)),
             ),
-            TextButton(
-              onPressed: () async => removerReserva(model.reserva!), //?
-              child: Text('Sim'),
+            ElevatedButton(
+              onPressed: () async => removerReserva(model.reserva!),
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.red),
+                foregroundColor: WidgetStatePropertyAll(Colors.white),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.white, width: 0.5),
+                  ),
+                ),
+              ),
+              child: Text('Remover reserva'),
             ),
           ],
         );
@@ -84,9 +97,7 @@ class _TelaReservasState extends State<TelaReservas> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Reservas')
-        ),
+        appBar: AppBar(title: Text('Reservas')),
         body: StreamBuilder<List<ReservasModel>>(
           stream: reservasDao.streamOfReservas(),
           builder: (context, snapshot) {
@@ -119,7 +130,7 @@ class _TelaReservasState extends State<TelaReservas> {
                 return CustomCard(
                   title: sala.nome,
                   subtitle: curso.nomeCurso,
-                  dataInicio: tools.converterDateTime(curso.dataInicio), 
+                  dataInicio: tools.converterDateTime(curso.dataInicio),
                   dataFim: tools.converterDateTime(curso.dataFim),
                   turno: curso.turno,
                   onTapShare: () => abrirTelaCompartilhar(model), //?

@@ -13,7 +13,8 @@ import 'package:senac_salas/database/daos/usuarios_dao.dart';
 import 'package:senac_salas/utils/validate_tools.dart';
 
 class Registro extends StatefulWidget {
-  const Registro({super.key}); //Construtor de classe
+    final ValueNotifier<int> notifier;
+  const Registro({super.key, required this.notifier}); //Construtor de classe
 
   @override
   State<Registro> createState() => _RegistroState();
@@ -140,10 +141,22 @@ class _RegistroState extends State<Registro> {
             ),
           ),
         );
+        widget.notifier.value = 0;
       }
       mudaStatusCadastro(false);
     } catch (e) {
-      log('Erro ao exexutar cadastro $e');
+      log('Erro ao executar cadastro $e');
+      if (mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            'Número de Telefone ou Email já registrado',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+      }
 
       mudaStatusCadastro(false);
     }

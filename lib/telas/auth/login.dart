@@ -9,7 +9,8 @@ import 'package:senac_salas/telas/home.dart';
 import 'package:senac_salas/utils/validate_tools.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  final ValueNotifier<int> notifier;
+  const Login({super.key, required this.notifier});
 
   @override
   State<Login> createState() => _LoginState();
@@ -74,7 +75,7 @@ class _LoginState extends State<Login> {
             SnackBar(
               backgroundColor: Colors.red,
               content: Text(
-                'Nome de Usuário ou Senhas Incorretas',
+                'E-mail ou Senhas Incorretas',
                 style: TextStyle(color: Colors.white),
               ),
             ),

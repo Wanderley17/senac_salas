@@ -10,44 +10,80 @@ class Autenticar extends StatefulWidget {
 }
 
 class _AutenticarState extends State<Autenticar> {
-  int selectedIndex = 0;
+  final ValueNotifier<int> _indexNotifier = ValueNotifier<int>(0);
+  List<Widget> paginas =[];
 
-  List<Widget> paginas = [Login(), Registro()];
+  @override
+  void initState() {
+    paginas = [
+      Login(notifier: _indexNotifier),
+      Registro(notifier: _indexNotifier),
+    ];
+    super.initState();
+  }
 
-  void mudarPagina(int index) => setState(() => selectedIndex = index);
+  @override
+  void dispose() {
+    _indexNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: paginas.elementAt(selectedIndex),
-        bottomNavigationBar: Container(
-          height: 70,
-          color: Colors.white,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              //Botão de entrada
-              TextButton(
-                onPressed: () => mudarPagina(0),
-                child: Text("Entrar", style: TextStyle(
-                  color: (selectedIndex == 0) ? Colors.indigo : Colors.black26,
-                  fontWeight: (selectedIndex == 0) ? FontWeight.bold : FontWeight.normal,
-                  fontSize: (selectedIndex == 0) ? 18 : 16
-                )),
+        body: ValueListenableBuilder(
+          valueListenable: _indexNotifier,
+          builder: (context, index, child) {
+            return paginas.elementAt(index);
+          }
+        ),
+        bottomNavigationBar: ValueListenableBuilder(
+          valueListenable: _indexNotifier,
+          builder: (context, index, child) {
+            return Container(
+              height: 70,
+              color: Colors.white,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //Botão de entrada
+                  TextButton(
+                    onPressed: () => _indexNotifier.value = 0,
+                    child: Text(
+                      "Entrar",
+                      style: TextStyle(
+                        color: (index == 0)
+                            ? Colors.indigo
+                            : Colors.black26,
+                        fontWeight: (index == 0)
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        fontSize: (index == 0) ? 18 : 16,
+                      ),
+                    ),
+                  ),
+                  //Botão de registro
+                  TextButton(
+                    onPressed: () => _indexNotifier.value = 1,
+                    child: Text(
+                      "Registrar",
+                      style: TextStyle(
+                        color: (index == 1)
+                            ? Colors.indigo
+                            : Colors.black26,
+                        fontWeight: (index == 1)
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        fontSize: (index == 1) ? 18 : 16,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              //Botão de registro
-               TextButton(
-                onPressed: () => mudarPagina(1),
-                child: Text("Registrar", style: TextStyle(
-                  color: (selectedIndex == 1) ? Colors.indigo : Colors.black26,
-                  fontWeight: (selectedIndex == 1) ? FontWeight.bold : FontWeight.normal,
-                  fontSize: (selectedIndex == 1) ? 18 : 16
-                )),
-              ),
-            ],
-          ),
+            );
+          }
         ),
       ),
     );

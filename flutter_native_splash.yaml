@@ -1,9 +1,8 @@
 flutter_native_splash:
   color: "#ffffff"
-  image: assets/splash.png
-
+  image: assets/launcher.png
   fullscreen: true
 
   android_16:
     color: "#ffffff"
-    image: assets/splash.png
+    image: assets/launcher.png

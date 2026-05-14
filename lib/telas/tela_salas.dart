@@ -5,6 +5,7 @@ import 'package:senac_salas/database/app_database.dart';
 import 'package:senac_salas/database/daos/salas_dao.dart';
 import 'package:senac_salas/telas/cadastro_curso.dart';
 import 'package:senac_salas/telas/cadastro_sala.dart';
+import 'package:senac_salas/telas/tela_cursos_sala.dart';
 
 class TelaSalas extends StatefulWidget {
   const TelaSalas({super.key});
@@ -60,7 +61,7 @@ class _TelaSalasState extends State<TelaSalas> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancelar', style:TextStyle(color: Colors.indigo)),
+              child: Text('Cancelar', style: TextStyle(color: Colors.indigo)),
             ),
             ElevatedButton(
               onPressed: () async => removerSala(sala),
@@ -121,6 +122,13 @@ class _TelaSalasState extends State<TelaSalas> {
     }
   }
 
+  void abrirTelaCursosSala(Sala sala) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TelaCursosSala(sala: sala)),
+    );
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {});
@@ -163,6 +171,7 @@ class _TelaSalasState extends State<TelaSalas> {
                       mudarDisponibilidadeSala(sala, value),
                   onDelete: () => abrirDialogoRemover(sala),
                   sala: sala,
+                  onTap: () => abrirTelaCursosSala(sala),
                 );
               },
             );

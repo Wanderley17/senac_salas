@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:senac_salas/database/app_database.dart';
 
 class CustomCardSala extends StatefulWidget {
-  final Function(bool) onDisponivel; //Função para troca de disponibilidade de sala
-  final VoidCallback onDelete;
+  final Function(bool)
+  onDisponivel; //Função para troca de disponibilidade de sala
+  final VoidCallback onDelete; //?
+  final VoidCallback onTap; //?
   final Sala sala; //Dados da sala a ser exibida no card
-  
+
   const CustomCardSala({
     super.key,
     required this.onDisponivel,
-    required this.sala, 
+    required this.sala,
     required this.onDelete,
+    required this.onTap,
   });
 
   @override
@@ -24,7 +27,7 @@ class _CustomCardSalaState extends State<CustomCardSala> {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      margin: EdgeInsets.symmetric(horizontal: 10),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       borderOnForeground: true,
       elevation: 1.5,
       color: Colors.white,
@@ -102,7 +105,14 @@ class _CustomCardSalaState extends State<CustomCardSala> {
                     color: Colors.black87,
                   ),
                 ),
-                IconButton(onPressed: widget.onDelete, icon: Icon(Icons.delete, color: Colors.red))
+                ElevatedButton(
+                  onPressed: widget.onTap,
+                  child: Text('Ver cursos'),
+                ),
+                IconButton(
+                  onPressed: widget.onDelete,
+                  icon: Icon(Icons.delete, color: Colors.red),
+                ),
               ],
             ),
           ],

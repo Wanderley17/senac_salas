@@ -47,8 +47,9 @@ flutter:
     - assets/logan.webp
     - assets/pedro.webp
 
+
   fonts:
     - family: NotoSans
-    - fonts: 
-      - asset: assets/notosans.ttf
-        style: normal
+      fonts: 
+        - asset: assets/NotoSans.ttf
+          style: normal

@@ -4,23 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:senac_salas/database/app_database.dart';
 import 'package:senac_salas/utils/format_tools.dart';
 
-class CustomCardCurso extends StatefulWidget {
-  final VoidCallback onDelete; //?
-  final VoidCallback onReserve; //!
+class CustomCardSalaCurso extends StatefulWidget {
   final Curso curso; //Dados da sala a ser exibida no card
 
-  const CustomCardCurso({
-    super.key,
-    required this.curso,
-    required this.onDelete,
-    required this.onReserve,
-  });
+  const CustomCardSalaCurso({super.key, required this.curso});
 
   @override
-  State<CustomCardCurso> createState() => _CustomCardCursoState();
+  State<CustomCardSalaCurso> createState() => _CustomCardSalaCursoState();
 }
 
-class _CustomCardCursoState extends State<CustomCardCurso> {
+class _CustomCardSalaCursoState extends State<CustomCardSalaCurso> {
   final FormatTools tools = FormatTools();
 
   @override
@@ -43,7 +36,7 @@ class _CustomCardCursoState extends State<CustomCardCurso> {
           spacing: 10,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 10,
               children: [
@@ -97,31 +90,6 @@ class _CustomCardCursoState extends State<CustomCardCurso> {
               ),
             ),
             SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 10,
-              children: [
-                ElevatedButton(
-                  onPressed: widget.onReserve,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Colors.indigo),
-                    foregroundColor: WidgetStatePropertyAll(Colors.white),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: Colors.indigo, width: 0.5),
-                      ),
-                    ),
-                  ),
-                  child: Text('Reservar sala'),
-                ),
-                IconButton(
-                  onPressed: widget.onDelete,
-                  icon: Icon(Icons.delete, color: Colors.red),
-                ),
-              ],
-            ),
           ],
         ),
       ),

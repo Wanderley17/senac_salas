@@ -48,6 +48,7 @@ flutter:
     - assets/kaio.webp
     - assets/logan.webp
     - assets/pedro.webp
+    - assets/jonas.png
 
 
   fonts:

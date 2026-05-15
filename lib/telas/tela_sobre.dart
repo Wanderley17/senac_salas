@@ -120,11 +120,7 @@ class TelaSobre extends StatelessWidget {
                                 children: [
                                   CircleAvatar(
                                     radius: 50,
-                                    backgroundColor: Colors.white,
-                                    child: ClipOval(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      child: Image.asset('assets/senac_logo.png', width: 100, height: 100),
-                                    )
+                                    backgroundImage: AssetImage('assets/jonas.png')
                                   ),
                                   SizedBox(width: 10, height: 10),
                                   Text('Jonas Felipe'),
